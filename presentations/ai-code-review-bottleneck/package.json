@@ -10,8 +10,8 @@
     "export": "slidev export --format pdf"
   },
   "devDependencies": {
-    "@slidev/cli": "^52.1.0",
-    "@slidev/theme-default": "^0.25.0",
+    "@slidev/cli": "52.1.0",
+    "@slidev/theme-default": "0.25.0",
     "playwright-chromium": "^1.55.0"
   }
 }
