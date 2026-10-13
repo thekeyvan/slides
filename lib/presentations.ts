@@ -9,6 +9,14 @@ export interface Presentation {
 
 export const presentations: Presentation[] = [
   {
+    slug: 'ai-code-review-bottleneck',
+    title: 'The AI Code Review Bottleneck',
+    description:
+      'AI Engineering Paris 2026: Matt Pocock and Kitze on PR review bottlenecks, quality gates, agent review and safer delivery.',
+    date: '2026',
+    tags: ['AI Engineering', 'Code Review', 'AI Agents', 'TypeScript', 'Developer Experience'],
+  },
+  {
     slug: 'manual-to-velocity-the-spec-driven-way-v3-iran',
     title: 'From Manual to Velocity: The Spec-Driven Way (v3)',
     description:
