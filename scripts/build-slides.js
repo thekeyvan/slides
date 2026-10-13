@@ -44,15 +44,12 @@ presentations.forEach((name) => {
       return;
     }
 
-    // Install dependencies if node_modules doesn't exist
-    const nodeModulesPath = path.join(presentationDir, 'node_modules');
-    if (!fs.existsSync(nodeModulesPath)) {
-      console.log(`  📥 Installing dependencies...`);
-      execSync('npm install', {
-        cwd: presentationDir,
-        stdio: 'inherit', // Show output for debugging
-      });
-    }
+    // Always reconcile dependencies with package.json; cached node_modules may be stale.
+    console.log('  📥 Reconciling dependencies...');
+    execSync('npm install --no-audit --no-fund', {
+      cwd: presentationDir,
+      stdio: 'inherit',
+    });
 
     // Build the presentation with correct base path
     console.log(`  🔨 Building slides...`);
