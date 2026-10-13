@@ -411,3 +411,8 @@ html.dark .callout-info {
   background: rgba(59, 130, 246, 0.1);
 }
 
+/* Work around Slidev GotoDialog overflow (#2519 / #2534). */
+#slidev-goto-dialog.-top-20 {
+  overflow: hidden;
+  max-height: 80px;
+}
