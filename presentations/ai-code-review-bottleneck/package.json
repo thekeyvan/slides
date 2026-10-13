@@ -1,0 +1,17 @@
+{
+  "name": "ai-code-review-bottleneck",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Engineering Paris 2026 — The AI Code Review Bottleneck",
+  "scripts": {
+    "dev": "slidev slides.md",
+    "build": "slidev build --base /slides/ai-code-review-bottleneck/",
+    "export": "slidev export --format pdf"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^52.1.0",
+    "@slidev/theme-default": "^0.25.0",
+    "playwright-chromium": "^1.55.0"
+  }
+}
