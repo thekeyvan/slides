@@ -326,39 +326,61 @@ layout: default
 
 <div class="text-sm text-primary font-bold uppercase">03 · Practical architecture</div>
 
-# An end-to-end PR workflow we can pilot
+# Separate judgment from execution
+
+<div class="text-lg text-muted mt-2">Example: a small change to an employer activity dashboard</div>
 
 <div class="grid grid-cols-3 gap-4 mt-8">
-  <div class="card"><div class="text-xs text-primary font-bold">01 / REQUIREMENT</div><h3 class="text-lg mt-2">Ticket + acceptance criteria</h3><p class="text-sm">Sort the employer dashboard by date</p></div>
-  <div class="card"><div class="text-xs text-primary font-bold">02 / IMPLEMENT</div><h3 class="text-lg mt-2">Agent on isolated branch</h3><p class="text-sm">Code + tests + diff</p></div>
-  <div class="card"><div class="text-xs text-primary font-bold">03 / VERIFY</div><h3 class="text-lg mt-2">Deterministic pipeline</h3><p class="text-sm">Typecheck · lint · rendered behavior</p></div>
-  <div class="card"><div class="text-xs text-primary font-bold">04 / CORRECT</div><h3 class="text-lg mt-2">Reviewer agent</h3><p class="text-sm">Standards + safe fixes + rerun CI</p></div>
-  <div class="card"><div class="text-xs text-primary font-bold">05 / EXPLAIN</div><h3 class="text-lg mt-2">Reviewable PR</h3><p class="text-sm">Evidence · blast radius · rollback</p></div>
-  <div class="card" style="border:2px solid #ea580c"><div class="text-xs text-primary font-bold">06 / DECIDE</div><h3 class="text-lg mt-2">Human judgment</h3><p class="text-sm">Approve under existing controls</p></div>
+  <div class="card" style="border-top:5px solid #ea580c">
+    <div class="text-xs text-primary font-bold tracking-wider">AI · JUDGMENT</div>
+    <h3 class="text-xl mt-3">Interpret & review</h3>
+    <div class="text-base mt-5 space-y-3">
+      <div>Understand acceptance criteria</div>
+      <div>Implement behavior and tests</div>
+      <div>Review against spec and standards</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:5px solid #16a34a">
+    <div class="text-xs text-green-700 font-bold tracking-wider">CODE · DETERMINISTIC</div>
+    <h3 class="text-xl mt-3">Run known steps</h3>
+    <div class="text-base mt-5 space-y-3">
+      <div>Provision a worktree / branch</div>
+      <div>Lint, typecheck, test, build</div>
+      <div>Check risk and merge eligibility</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:5px solid #2563eb">
+    <div class="text-xs text-blue-700 font-bold tracking-wider">HUMAN · ACCOUNTABILITY</div>
+    <h3 class="text-xl mt-3">Resolve the exceptions</h3>
+    <div class="text-base mt-5 space-y-3">
+      <div>Approve intent and policy</div>
+      <div>Resolve ambiguous risk</div>
+      <div>Approve under existing controls</div>
+    </div>
+  </div>
 </div>
 
-<div class="text-sm text-muted mt-7">Illustrative employer-portal example. Azure DevOps Boards + Repos + Pipelines are plausible integration points.</div>
+<div class="callout mt-8 text-center text-lg"><strong>Agent → scripted checks → focused AI review → scripted gate → human decision</strong></div>
+
+<div class="text-sm text-muted mt-3">Trainer Hub tests this separation; Azure DevOps could host a similar pilot. This is not our current production workflow.</div>
 
 <!--
 [2:15]
 
-Let's make this concrete using a fictional low-risk change: adding a sorting option to an employer-portal dashboard.
+Let's keep a concrete, fictional example: an employer portal activity dashboard needs a new date sort order. The acceptance criteria should say which timestamp matters, how ties are handled and what a user actually observes.
 
-Step one, start with a ticket and explicit acceptance criteria: what is sorted, what happens for equal values, and what a user sees. The ticket should also say which behavior would be unacceptable.
+Now separate three different responsibilities rather than asking one agent to decide and execute everything.
 
-Step two, the implementer operates on a short-lived branch, finds relevant components, implements the change, and adds tests.
+First, AI judgment: interpret the ticket, implement the behavior, write tests, and perform a separate contextual review of the change against requirements and repository standards. This is where language and ambiguity are genuinely useful.
 
-Step three, run deterministic checks — TypeScript, lint, unit or component tests, and a targeted behavioral test that renders the actual order instead of searching source text.
+Second, deterministic code: create the isolated worktree, run the standard checks, inspect known risk rules, and evaluate whether merge prerequisites are met. We should not ask an LLM to invent commands or re-interpret the same CI status on every PR.
 
-Step four, a second agent reads the diff and team's standards, fixes safe issues, and reruns checks. Cap the loop; escalate to a human if it stalls.
+Third, human accountability: resolve genuinely ambiguous requirements or consequential risk and retain our existing approval rules. This does not propose an auto-merge rollout at NN.
 
-Step five, PR description explains expected behavior, evidence, possible side effects and whether the change is reversible. Step six, a person sees a prepared change rather than raw agent output.
+In my personal Trainer Hub project, I have begun encoding these mechanical steps in scripts: flow.sh for state, check.sh for validation, risk.sh and a merge gate for policy. We could apply the pattern using Azure DevOps Boards, Repos and Pipelines without adopting my exact scripts.
 
-We could prototype most of this with the Azure DevOps Boards, Repos and Pipelines we already use. Exact orchestration is an implementation choice, not the main idea. Agents should have scoped branch permissions and must not bypass branch protection.
-
-Source: Proposed implementation based on Matt Pocock. The example is fictional, not company data.
+Source: proposed translation of Matt Pocock's review workflow and concrete architecture observed in Trainer Hub. The dashboard example is fictional.
 -->
-
 
 ---
 layout: default
@@ -461,38 +483,48 @@ Source: Matt Pocock's Retro skill.
 layout: default
 ---
 
-<div class="text-sm text-primary font-bold uppercase">04 · Related insight from Kitze</div>
+<div class="text-sm text-primary font-bold uppercase">04 · A practical experiment</div>
 
-# Parallel agents amplify the system around them
+# Don't use AI where a function will do
 
-<div class="grid grid-cols-2 gap-9 mt-12">
+<div class="grid grid-cols-3 gap-4 mt-9">
   <div class="card">
-    <div class="text-sm text-muted uppercase">Kitze · Engineering environment</div>
-    <h3 class="text-2xl mt-3">More parallel work</h3>
-    <div class="mt-7 text-lg">Isolated execution<br/>Reusable tooling<br/>Visible feedback</div>
+    <div class="text-sm text-muted uppercase font-bold">What phase are we in?</div>
+    <h3 class="text-xl mt-5 text-primary">flow.sh</h3>
+    <div class="text-sm font-mono mt-2">flow-phase.jq</div>
+    <p class="text-base mt-5">Known issue facts → one consistent next step</p>
   </div>
-  <div class="card" style="border:2px solid #ea580c">
-    <div class="text-sm text-primary uppercase">Pocock · Acceptance architecture</div>
-    <h3 class="text-2xl mt-3">More reliable PRs</h3>
-    <div class="mt-7 text-lg">Checks<br/>Corrective review<br/>Risk-based human decision</div>
+  <div class="card">
+    <div class="text-sm text-muted uppercase font-bold">Is this change high-risk?</div>
+    <h3 class="text-xl mt-5 text-primary">risk.sh</h3>
+    <div class="text-sm font-mono mt-2">risk.jq</div>
+    <p class="text-base mt-5">Paths and labels → repeatable classification</p>
+  </div>
+  <div class="card">
+    <div class="text-sm text-muted uppercase font-bold">Can this PR pass the gate?</div>
+    <h3 class="text-xl mt-5 text-primary">merge-gate.jq</h3>
+    <div class="text-sm font-mono mt-2">+ pr.sh</div>
+    <p class="text-base mt-5">Checks, review records and freshness → explicit decision</p>
   </div>
 </div>
 
-<div class="text-xl text-center mt-10"><strong>Increasing generation capacity without gates only moves the queue.</strong></div>
-<div class="text-sm text-muted mt-5">Synthesis of two talks; not a direct quotation.</div>
+<div class="callout mt-9 text-xl text-center"><strong>Encode a repeatable decision once. Test it. Reuse it across agent runs.</strong></div>
+
+<div class="text-sm text-muted mt-5">Examples from Trainer Hub (personal project). Kitze's execution tooling + Pocock's review gates; synthesis, not a direct quote.</div>
 
 <!--
 [1:00]
 
-A useful connection from Kitze's session is that once we run agents in parallel, the surrounding environment matters even more: good foundations, reusable tools, isolated execution and visible feedback. Parallel agents can increase candidate output quickly, but that does not automatically raise merge throughput.
+Here is the connection I kept hearing throughout the conference: if a step can be expressed as code, don't pay a language model to figure it out each time.
 
-Distinguish this supporting insight from Matt's specific review proposal. Kitze emphasized engineering environment and agency; Matt focused on how to prepare and safely accept resulting PRs. Together they suggest: as generation capacity grows, quality and isolation gates must be at least as dependable.
+In Trainer Hub, flow.sh plus flow-phase.jq derives the phase and next action from issue facts. risk.sh plus risk.jq classifies configured high-risk paths and owner-merge labels. The merge-gate.jq function evaluates the explicit conditions for a PR using evidence for the current commit.
 
-We can start locally with branch isolation and clear pipelines. A full cloud-hosted software factory is not required to test the review architecture.
+These scripts are tested, so the same inputs produce the same decision. The AI is left with the questions that actually need it: What does the user want? Is the proposed design right? Does the code satisfy the requirement?
 
-Source: Kitze, AI Engineering Paris 2026; synthesis with Matt.
+This reinforces Matt's first brake, and Kitze's emphasis on a reliable execution environment. More agents without repeatable gates can only generate more review work. I am not suggesting we copy the scripts into our company; I'm suggesting we identify the decisions we can turn into functions.
+
+Source: observed Trainer Hub implementation; synthesis of Matt Pocock and Kitze, AI Engineering Paris 2026.
 -->
-
 
 ---
 layout: default
@@ -500,31 +532,44 @@ layout: default
 
 <div class="text-sm text-primary font-bold uppercase">05 · Limits and trade-offs</div>
 
-# What could go wrong?
+# Deterministic ≠ automatically correct
 
 <div class="grid grid-cols-2 gap-5 mt-9">
-  <div class="card"><h3 class="text-xl text-red-600">Correlated blind spots</h3><p class="text-base mt-3">A fresh agent can share the same mistaken assumption.</p></div>
-  <div class="card"><h3 class="text-xl text-red-600">Review noise</h3><p class="text-base mt-3">False positives and comment overload burn attention.</p></div>
-  <div class="card"><h3 class="text-xl text-red-600">Runaway loops</h3><p class="text-base mt-3">Repeated fixes add latency and token cost.</p></div>
-  <div class="card"><h3 class="text-xl text-red-600">Permissions and governance</h3><p class="text-base mt-3">Agents must not bypass branch protections or accountability.</p></div>
+  <div class="card">
+    <h3 class="text-xl text-red-600">Incomplete risk rules</h3>
+    <p class="text-base mt-3">Path-based rules can miss semantic risk outside named files.</p>
+  </div>
+  <div class="card">
+    <h3 class="text-xl text-red-600">Evidence is not enforcement</h3>
+    <p class="text-base mt-3">PR review records help, but platform policy must be the hard floor.</p>
+  </div>
+  <div class="card">
+    <h3 class="text-xl text-red-600">Correlated AI errors</h3>
+    <p class="text-base mt-3">A fresh reviewer can repeat the implementer's wrong assumption.</p>
+  </div>
+  <div class="card">
+    <h3 class="text-xl text-red-600">More loops, more noise</h3>
+    <p class="text-base mt-3">False positives, repeated fixes and extra tokens can increase latency.</p>
+  </div>
 </div>
 
-<div class="callout-warning callout mt-7 text-lg"><strong>Prove that the reviewer removes work; measure defects, noise, time and cost.</strong></div>
+<div class="callout-warning callout mt-7 text-lg"><strong>Deterministic means reproducible — not that the rule covers every failure mode.</strong></div>
 
 <!--
 [1:30]
 
-The proposal has limits. An implementing and reviewing agent can share the same mistaken assumption. Independent context reduces clutter; it does not guarantee independent judgment. Important behavior still needs meaningful tests and ownership.
+We should not oversell deterministic code. Repeating the same decision consistently does not mean the decision is always right.
 
-Generic bots may produce false positives and approval fatigue. That is why Matt emphasizes repository-specific coding standards. Even then measure whether the bot eliminates work or just moves it.
+The Trainer Hub experiment makes this particularly clear: risk.sh uses a defined set of paths and labels. That's testable, but a semantically dangerous change could still live in an unlisted path. Its ADR calls out that limitation.
 
-Automatic fix loops can become infinite. Use a small retry budget, cost and latency limits and defined escalation.
+Similarly, review and smoke-test records stored with the PR refer to a particular head commit. They help us detect stale evidence, but they are not independent security attestations. Real branch protection and required CI should be enforced by the platform, rather than trusting an agent's description.
 
-Permissions are part of quality. Keep agents on isolated branches with suitable credentials, preserve auditability, rerun checks after reviewer commits and honor normal branch protections. This matters especially for sensitive employer and insurance workflows. Automation should reduce low-value human effort, not bypass accountability.
+On the AI side, a fresh reviewer may share the implementer's assumptions, while false positives or unbounded fix cycles add latency and cost. In Trainer Hub the reviewers are deliberately read-only: that is a trade-off against Matt's suggestion that the reviewer directly commit clear fixes.
 
-Source: Matt Pocock and practical engineering risk analysis.
+For an enterprise rollout, keep permissions scoped, checks externally enforced and exceptions visible. Measure human rework and defects, not merely whether bots report success.
+
+Source: practical limitations from Trainer Hub's ADR-016 and Matt Pocock's review recommendations.
 -->
-
 
 ---
 layout: default
@@ -538,45 +583,46 @@ layout: default
   <div class="card">
     <h3 class="text-2xl">Pilot</h3>
     <div class="mt-5 text-lg space-y-3">
-      <div>1 low-risk repository</div>
-      <div>Team-owned review standards</div>
-      <div>Reviewer agent + bounded fixes</div>
-      <div>Existing human approval unchanged</div>
+      <div>Pick 1 low-risk repository</div>
+      <div>Collect 3 recurring review comments</div>
+      <div>Turn 1 into a tested script/check</div>
+      <div>Use an AI reviewer for remaining judgment</div>
+      <div>Keep human approval unchanged</div>
     </div>
   </div>
   <div class="card">
     <h3 class="text-2xl">Measure</h3>
     <div class="mt-5 text-lg space-y-3">
       <div>Review wait time</div>
-      <div>Human rework / comments</div>
-      <div>Defects and false positives</div>
-      <div>Extra CI + model cost</div>
+      <div>Repeat comments and human rework</div>
+      <div>False positives and regressions</div>
+      <div>Extra CI time + model cost</div>
     </div>
   </div>
 </div>
 
-<div class="mt-10 text-center text-2xl font-bold"><span class="gradient-text">Optimize safe delivery, not generated PR count.</span></div>
+<div class="mt-9 text-center text-2xl font-bold"><span class="gradient-text">Automate the repeatable. Review the uncertain.</span></div>
 <div class="abs-br m-6 text-sm text-muted">Discussion · 5–10 minutes Q&A</div>
 
 <!--
 [1:15]
 
-My proposal is not to buy an orchestration platform or roll out auto-merge. We already have enough to run a small controlled experiment.
+Here is a concrete, low-risk pilot we can try with what we already have.
 
-Choose one low-risk repository and a repeatable class of PRs. Baseline recent review waiting time and rework. Add focused repository-owned coding standards, an agent review stage on the feature branch, and deterministic checks that rerun after safe edits. Keep the existing human approval policy.
+Pick one repository and collect three review comments that recur. Ask which one can become a deterministic check or repeatable tool call. Write that check with tests, place it in our normal pipeline, and keep its output actionable. Then use a separate AI review pass for concerns that require context and judgment.
 
-During two sprints, track review latency, human comments, reviewer false positives, defects or regressions, and additional CI and model cost. If the stage makes PRs easier to trust and reduces actual work, expand it; if it adds noise or delay, revise or remove it.
+This is smaller than a software factory migration. We keep the existing approval policy and use the Azure DevOps tools we already operate.
 
-Closing thought: speed does not come from generating the maximum number of PRs. It comes from reducing avoidable decisions between useful code and safe delivery.
+Baseline review wait time and human rework. Over two sprints, compare repeat comments, false positives, defects, added CI time and model cost. If the system creates a cleaner PR and saves reviewer attention, expand it; otherwise change course.
 
-Q&A.
+The closing principle is: automate the repeatable, review the uncertain. The objective is safe delivery throughput, not a bigger pile of generated code.
 
-Suggested Q&A:
-- Why not auto-merge? Approval changes require engineering/security/compliance decision.
-- Why another agent? Dedicated context and standards; no guarantee of correctness.
-- Isn't this existing review? Make it corrective, bounded, rerun CI and measure work saved.
-- What if tests are written by the agent? Use explicit acceptance criteria and observable behavior as oracle.
-- What if token cost rises? Measure end-to-end lead time and human interventions.
+Q&A:
+- Why not automate all reviews? Semantics, implicit requirements and system risk still need judgment.
+- Why scripts rather than more prompts? Repeatable, testable steps should produce the same answer and cost less to validate.
+- What if a script is wrong? It is versioned and testable, but rules need coverage and independent enforcement.
+- Why don't the Trainer Hub reviewers commit fixes? That project chose read-only independent reviewers; Matt proposes corrective review. We can compare both.
+- Does this mean auto-merge? No; keep our existing human approval unchanged during the pilot.
 
-Sources: Proposal derived from Matt Pocock and Kitze; no pilot benefits claimed as measured.
+Sources: proposed pilot derived from Matt Pocock and Kitze, with implementation examples from Trainer Hub; no outcome metrics claimed.
 -->
