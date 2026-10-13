@@ -13,7 +13,7 @@ layout: cover
 class: text-center
 ---
 
-<style src="../../theme/style.css"></style>
+
 
 <div class="text-sm tracking-widest uppercase text-muted">AI Engineering Paris 2026 · Engineering takeaways</div>
 

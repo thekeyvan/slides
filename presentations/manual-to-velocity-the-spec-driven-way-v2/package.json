@@ -14,12 +14,11 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@slidev/cli": "^52.1.0",
+    "@slidev/cli": "53.0.0",
     "@slidev/theme-seriph": "^0.25.0",
     "playwright-chromium": "^1.55.0"
   },
   "dependencies": {
-    "@slidev/theme-default": "^0.25.0"
+    "@slidev/theme-default": "0.25.0"
   }
 }
-

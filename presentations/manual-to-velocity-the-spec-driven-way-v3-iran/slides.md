@@ -14,7 +14,7 @@ class: text-center
 favicon: '/favicon.ico'
 ---
 
-<style src="../../theme/style.css"></style>
+
 
 # From Manual to Velocity
 ## The Spec-Driven Way
